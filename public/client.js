@@ -6,7 +6,7 @@ $( document ).ready(function() {
     //let  items = [];
     itemsRaw = data;
     $.each(data, function(i, val) {
-      items.push('<li class="bookItem" id="' + i + '">' + val.title + ' - ' + val.commentcount + ' comments</li>');
+      items.push('<li class="bookItem" id="' + i + '">' + val.title + ' - ' + '<span>' + val.commentcount + ' comments</span></li>');
       return ( i !== 14 );
     });
     if (items.length >= 15) {
@@ -20,15 +20,14 @@ $( document ).ready(function() {
   
   let  comments = [];
   $('#display').on('click','li.bookItem',function() {
-    $("#detailTitle").html('<b>'+itemsRaw[this.id].title+'</b> (id: '+itemsRaw[this.id]._id+')');
+    $("#detailTitle").html('<b>'+itemsRaw[this.id].title+'</b> <span>(id: '+itemsRaw[this.id]._id+')</span>');
     $.getJSON('/api/books/'+itemsRaw[this.id]._id, function(data) {
       comments = [];
       $.each(data.comments, function(i, val) {
         comments.push('<li>' +val+ '</li>');
       });
-      comments.push('<br><form id="newCommentForm"><input style="width:300px" type="text" class="form-control" id="commentToAdd" name="comment" placeholder="New Comment"></form>');
-      comments.push('<br><button class="btn btn-info addComment" id="'+ data._id+'">Add Comment</button>');
-      comments.push('<button class="btn btn-danger deleteBook" id="'+ data._id+'">Delete Book</button>');
+      comments.push('<br><form id="newCommentForm"><input style="width:90%" type="text" class="form-control" id="commentToAdd" name="comment" placeholder="New Comment"></form>');
+      comments.push('<br><div id="main-buttons"><button class="btn btn-primary addComment" id="'+ data._id+'">Add Comment</button><button class="btn btn-danger deleteBook" id="'+ data._id+'">Delete Book</button></div>')
       $('#detailComments').html(comments.join(''));
     });
   });
@@ -52,7 +51,7 @@ $( document ).ready(function() {
       dataType: 'json',
       data: $('#newCommentForm').serialize(),
       success: function(data) {
-        comments.unshift(newComment); //adds new comment to top of list
+        comments.unshift(newComment + '<br>'); //adds new comment to top of list
         $('#detailComments').html(comments.join(''));
       }
     });
